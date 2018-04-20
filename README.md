@@ -1,18 +1,21 @@
 # app-native-react
+
 Application Native React de la carte conso+ NC
 
+Installation in development environment
 
+$ yarn
 
-Install & Exec
+Start for Web in development environment
+$ yarn web:start
 
-$ npm install
+Start for Native & Expo in development environment
+$ yarn native:start
 
-$ npm start
+To use for Native & Virtual Device in development environment
+$ yarn { android | ios }
 
-
-
-En cas d'erreur Watchman
+In case of Watchman errors
 
 $ watchman watch-del-all
-
 $ watchman shutdown-server
