@@ -1,6 +1,16 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Text,  View, Button, ActivityIndicator, TouchableOpacity, Image, YellowBox } from 'react-native';
-import { Link } from 'react-router';
+import {
+  AsyncStorage,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image
+} from 'react-native';
+
+import engrenageImg from 'assets/img/engrenage.png'
 
 class ProfileScreen extends React.Component {
   constructor(props) {
@@ -24,7 +34,7 @@ class ProfileScreen extends React.Component {
   }
 
 // fonction uniquement pour test - a delete avant prod
-  async saveFalseInfos() {
+    saveFalseInfos() {
       try {
           AsyncStorage.multiSet([['login', 'popo'], ['password', 'toto']]);
       } catch (error) {
@@ -70,7 +80,7 @@ class ProfileScreen extends React.Component {
                 </View>
                 <View style={{padding:10}}>
                     <TouchableOpacity style={styles.button} onPress={ this.logout }>
-                        <Image source={require("./engrenage.png")} style={{ alignSelf: 'stretch', resizeMode: 'contain', width: 60,
+                        <Image source={engrenageImg} style={{ alignSelf: 'stretch', resizeMode: 'contain', width: 60,
                                                                                                                               height: 60 }} />
                     </TouchableOpacity>
                 </View>
