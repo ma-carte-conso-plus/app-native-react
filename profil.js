@@ -5,57 +5,40 @@ import { Link } from 'react-router';
 class ProfileScreen extends React.Component {
   constructor(props) {
       super(props);
-      this.state = {user: props, isLoaded: false};
+      this.state = { isLoaded: false };
     }
 
   logout = async () => {
     try {
-        await AsyncStorage.multiRemove(['login', 'password']);
-        const location = {
+        AsyncStorage.multiRemove(['login', 'password'])
+            .then(() => {
+                const location = {
                        pathname: '/',
-                       state: { fromDashboard: true }
-                     };
-        this.props.history.push(location);
+                       state: { }
+                };
+                this.props.history.push(location);
+            });
     } catch (error) {
         console.error('AsyncStorage error: ' + error.message);
     }
   }
 
+// fonction uniquement pour test - a delete avant prod
   async saveFalseInfos() {
       try {
-          await AsyncStorage.multiSet([['login', 'popo'], ['password', 'toto']]);
+          AsyncStorage.multiSet([['login', 'popo'], ['password', 'toto']]);
       } catch (error) {
           console.error('AsyncStorage error: ' + error.message);
       }
     }
 
-  componentDidMount() {
-    AsyncStorage.multiGet(['login', 'password']).then((token) => {
-        if (token[0][1] !== null) {
-            const url = 'http://172.16.24.30:8080/' + token[0][1] + '/' + token[1][1] + '/';
-                fetch(url)
-                   .then((response) => response.json())
-                   .then((responseJson) => {
-                      if (responseJson.status) {
-                         console.log('wrong password! Retour à l\'écran de login');
-                        // Actions.LoginScreen();
-                      } else {
-                         this.setState({ user: responseJson, isLoaded: true });
-                      }
-                   })
-                   .catch((error) => {
-                       console.error(error);
-                   });
-        }
-     });
 
+   componentDidMount() {
+        this.setState({ isLoaded: true });
   }
 
+
   render() {
-    YellowBox.ignoreWarnings([
-                  'Warning: componentWillMount is deprecated',
-                  'Warning: componentWillReceiveProps is deprecated',
-                ]);
 
     if (!this.state.isLoaded) {
        return (
@@ -64,10 +47,12 @@ class ProfileScreen extends React.Component {
                        animating={true} />
             </View>
        )
+
     } else {
-        const solde = this.state.user ? this.state.user.solde : null;
-        const prenom = this.state.user ? this.state.user.prenom : null;
-        const soldeDescription = this.state.user ? this.state.user.soldeDescription : null;
+        const utilisateur = this.props.location.state.user;
+        const solde = utilisateur ? utilisateur.solde : null;
+        const prenom = utilisateur ? utilisateur.prenom : null;
+        const soldeDescription = utilisateur ? utilisateur.soldeDescription : null;
 
         const regExp = /[\D]*[0-9]*[\D]*([0-9]*)/;
         const soldeFrancs = soldeDescription ? regExp.exec(soldeDescription)[1] : 0;

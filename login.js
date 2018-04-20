@@ -8,23 +8,17 @@ class LoginScreen extends React.Component {
   constructor(props) {
         super(props);
         this.state = {
-        login: '9900001',
-        password: '',
-          masque: true,
-          active: false,
-          messageErreur: ''};
+            login: '9900001',
+            password: '',
+            masque: true,
+            isLoaded: false,
+            active: true,
+            messageErreur: ''
+        };
     };
 
-  async saveInfos(login, password) {
-    try {
-        await AsyncStorage.multiSet([['login', login], ['password', password]]);
-    } catch (error) {
-        console.error('AsyncStorage error: ' + error.message);
-    }
-  }
-
   handleClick = () => {
-      this.setState({active: true});
+      this.setState({isLoaded: false});
       const url = 'http://172.16.24.30:8080/' + this.state.login + '/' + this.state.password + '/';
       fetch(url)
                    .then((response) => response.json())
@@ -34,66 +28,107 @@ class LoginScreen extends React.Component {
                           this.setState({active: false});
                          console.log('wrong password!');
                       } else {
-                          this.saveInfos(responseJson.noCompte, responseJson.password);
-                          this.setState({ messageErreur: ''});
-                          this.setState({active: false});
+                          AsyncStorage.multiSet([['login', responseJson.noCompte], ['password', responseJson.password]])
+                            .then(() => {
+                                  this.setState({ messageErreur: ''});
+                                  this.setState({active: false});
 
-                          const location = {
-                              pathname: '/other',
-                              state: { fromDashboard: true }
-                            };
 
-                          this.props.history.push(location);
-                          console.log('move to profilscreen');
+                                  const location = {
+                                      pathname: '/profil',
+                                      state: { user: responseJson }
+                                    };
+
+                                  this.props.history.push(location);
+                            })
+                            .catch((error) => {
+                               this.setState({ messageErreur: 'Erreur de connexion!'} );
+                               this.setState({active: false});
+                            });
                       }
                    })
                    .catch((error) => {
-                       console.log('error M. le dev');
                        this.setState({ messageErreur: 'Erreur de connexion!'} );
                        this.setState({active: false});
-                      // console.error(error);
+                       console.error(error);
                    });
          };
 
+  componentDidMount() {
+      AsyncStorage.multiGet(['login', 'password']).then((token) => {
+          if (token[0][1] !== null) {
+                const url = 'http://172.16.24.30:8080/' + token[0][1] + '/' + token[1][1] + '/';
+                console.log(url);
+                fetch(url)
+                   .then((response) => response.json())
+                   .then((responseJson) => {
+                      if (responseJson.status) {
+                            console.log('wrong password! On reste sur l\'écran de login');
+                            this.setState({ isLoaded: true });
+                      } else {
+                         const location = {
+                             pathname: '/profil',
+                             state: { user: responseJson }
+                          };
+                          this.props.history.push(location);
+                          console.log('auto move to profilscreen');
+                      }
+                   })
+                   .catch((error) => {
+                       console.error(error);
+                       this.setState({ isLoaded: true });
+                   });
+          } else {
+            console.log('rien dans le token');
+            this.setState({ isLoaded: true });
+          }
+       });
+  };
+
+
   render() {
+    if (!this.state.isLoaded) {
+           return (
+                <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color="#0000ff"
+                           animating={true} />
+                </View>
+           )
 
-    YellowBox.ignoreWarnings([
-                  'Warning: componentWillMount is deprecated',
-                  'Warning: componentWillReceiveProps is deprecated',
-                ]);
+        } else {
+            return (
+              <View style={styles.container}>
+                <View style={styles.gauche}>
+                    <View style={styles.form}>
+                      <Text>Login: </Text>
+                      <TextInput style={{width: 150}}
+                            value={this.state.login}
+                            onChangeText={(text) => this.setState({login: text})} />
+                    </View>
+                    <View style={styles.form}>
+                      <Text>Password: </Text>
+                      <TextInput style={{width: 80}} secureTextEntry={this.state.masque}
+                            value={this.state.password}
+                            onChangeText={(text) => this.setState({password: text})} />
+                    </View>
+                    <View style={styles.form}>
+                        <Text>Afficher le password </Text>
+                        <Switch value={!this.state.masque}
+                            onValueChange={() => this.setState({masque: !this.state.masque})} />
+                    </View>
+                </View>
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.gauche}>
-            <View style={styles.form}>
-              <Text>Login: </Text>
-              <TextInput style={{width: 150}}
-                    value={this.state.login}
-                    onChangeText={(text) => this.setState({login: text})} />
-            </View>
-            <View style={styles.form}>
-              <Text>Password: </Text>
-              <TextInput style={{width: 80}} secureTextEntry={this.state.masque}
-                    value={this.state.password}
-                    onChangeText={(text) => this.setState({password: text})} />
-            </View>
-            <View style={styles.form}>
-                <Text>Afficher le password </Text>
-                <Switch value={!this.state.masque}
-                    onValueChange={() => this.setState({masque: !this.state.masque})} />
-            </View>
-        </View>
+                <Button title="Connexion" color="blue" onPress={ this.handleClick } style={styles.button}/>
+                <View  >
+                    <Text style={styles.error}>{this.state.messageErreur}</Text>
+                </View>
+                <ActivityIndicator size="large" color="#0000ff"
+                     animating={true}
+                      style={{ opacity: this.state.isLoaded ? 0 : 1, position: 'absolute', top: 230 }} />
+              </View>
 
-        <Button title="Connexion" color="blue" onPress={ this.handleClick } style={styles.button}/>
-        <View  >
-            <Text style={styles.error}>{this.state.messageErreur}</Text>
-        </View>
-        <ActivityIndicator size="large" color="#0000ff"
-             animating={true}
-              style={{ opacity: this.state.active ? 1 : 0, position: 'absolute', top: 230 }} />
-      </View>
-
-    );
+            );
+         }
   }
 }
 

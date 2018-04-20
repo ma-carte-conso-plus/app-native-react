@@ -29,7 +29,7 @@ class App extends Component {
             <Router>
                 <Switch>
                     <Route exact path="/" component={LoginScreen} />
-                    <Route path="/other" component={ProfilScreen} />
+                    <Route path="/profil" component={ProfilScreen} />
                 </Switch>
             </Router>
         )
