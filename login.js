@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Text, TextInput, Button, View, Switch, ActivityIndicator, YellowBox } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import { Link } from 'react-router';
 
 
 class LoginScreen extends React.Component {
@@ -23,38 +23,44 @@ class LoginScreen extends React.Component {
     }
   }
 
+  handleClick = () => {
+      this.setState({active: true});
+      const url = 'http://172.16.24.30:8080/' + this.state.login + '/' + this.state.password + '/';
+      fetch(url)
+                   .then((response) => response.json())
+                   .then((responseJson) => {
+                      if (responseJson.status) {
+                          this.setState({ messageErreur: 'Vérifiez les informations de connexion'} );
+                          this.setState({active: false});
+                         console.log('wrong password!');
+                      } else {
+                          this.saveInfos(responseJson.noCompte, responseJson.password);
+                          this.setState({ messageErreur: ''});
+                          this.setState({active: false});
+
+                          const location = {
+                              pathname: '/other',
+                              state: { fromDashboard: true }
+                            };
+
+                          this.props.history.push(location);
+                          console.log('move to profilscreen');
+                      }
+                   })
+                   .catch((error) => {
+                       console.log('error M. le dev');
+                       this.setState({ messageErreur: 'Erreur de connexion!'} );
+                       this.setState({active: false});
+                      // console.error(error);
+                   });
+         };
+
   render() {
-    const { navigate } = this.props.navigation;
 
     YellowBox.ignoreWarnings([
                   'Warning: componentWillMount is deprecated',
                   'Warning: componentWillReceiveProps is deprecated',
                 ]);
-
-    handleClick = () => {
-        this.setState({active: true});
-        const url = 'http://172.16.24.30:8080/' + this.state.login + '/' + this.state.password + '/';
-        fetch(url)
-                     .then((response) => response.json())
-                     .then((responseJson) => {
-                        if (responseJson.status) {
-                            this.setState({ messageErreur: 'Vérifiez les informations de connexion'} );
-                            this.setState({active: false});
-                           console.log('wrong password!');
-                        } else {
-                            this.saveInfos(responseJson.noCompte, responseJson.password);
-                            this.setState({ messageErreur: ''});
-                            this.setState({active: false});
-                            Actions.ProfilScreen();
-                        }
-                     })
-                     .catch((error) => {
-                         console.log('error M. le dev');
-                         this.setState({ messageErreur: 'Erreur de connexion!'} );
-                         this.setState({active: false});
-                        // console.error(error);
-                     });
-           };
 
     return (
       <View style={styles.container}>
@@ -78,7 +84,7 @@ class LoginScreen extends React.Component {
             </View>
         </View>
 
-        <Button title="Connexion" color="blue" onPress={ handleClick } style={styles.button}/>
+        <Button title="Connexion" color="blue" onPress={ this.handleClick } style={styles.button}/>
         <View  >
             <Text style={styles.error}>{this.state.messageErreur}</Text>
         </View>
@@ -121,4 +127,4 @@ const styles = StyleSheet.create({
 });
 
 
-module.exports = LoginScreen;
+export default LoginScreen;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Text,  View, Button, ActivityIndicator, TouchableOpacity, Image, YellowBox } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import { Link } from 'react-router';
 
 class ProfileScreen extends React.Component {
   constructor(props) {
@@ -8,10 +8,14 @@ class ProfileScreen extends React.Component {
       this.state = {user: props, isLoaded: false};
     }
 
-  async logout() {
+  logout = async () => {
     try {
         await AsyncStorage.multiRemove(['login', 'password']);
-        Actions.LoginScreen();
+        const location = {
+                       pathname: '/',
+                       state: { fromDashboard: true }
+                     };
+        this.props.history.push(location);
     } catch (error) {
         console.error('AsyncStorage error: ' + error.message);
     }
@@ -34,7 +38,7 @@ class ProfileScreen extends React.Component {
                    .then((responseJson) => {
                       if (responseJson.status) {
                          console.log('wrong password! Retour à l\'écran de login');
-                         Actions.LoginScreen();
+                        // Actions.LoginScreen();
                       } else {
                          this.setState({ user: responseJson, isLoaded: true });
                       }
@@ -129,4 +133,4 @@ const styles = StyleSheet.create({
 });
 
 
-module.exports = ProfileScreen;
+export default ProfileScreen;
