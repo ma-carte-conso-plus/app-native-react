@@ -20,7 +20,6 @@ class LoginScreen extends React.Component {
             password: '',
             masque: true,
             isLoaded: false,
-            active: true,
             messageErreur: ''
         };
     };
@@ -38,15 +37,14 @@ class LoginScreen extends React.Component {
                    .then((response) => response.json())
                    .then((responseJson) => {
                       if (responseJson.status) {
-                          this.setState({ messageErreur: 'Vérifiez les informations de connexion'} );
-                          this.setState({active: false});
+                         this.setState({ messageErreur: 'Vérifiez les informations de connexion'} );
+                         this.setState({isLoaded: true});
                          console.log('wrong password!');
                       } else {
-                          AsyncStorage.multiSet([['login', responseJson.noCompte], ['password', responseJson.password]])
+                         AsyncStorage.multiSet([['login', responseJson.noCompte], ['password', responseJson.password]])
                             .then(() => {
                                   this.setState({ messageErreur: ''});
-                                  this.setState({active: false});
-
+                                  this.setState({isLoaded: true});
 
                                   const location = {
                                       pathname: '/profil',
@@ -57,13 +55,13 @@ class LoginScreen extends React.Component {
                             })
                             .catch((error) => {
                                this.setState({ messageErreur: 'Erreur de connexion!'} );
-                               this.setState({active: false});
+                               this.setState({isLoaded: true});
                             });
                       }
                    })
                    .catch((error) => {
                        this.setState({ messageErreur: 'Erreur de connexion!'} );
-                       this.setState({active: false});
+                       this.setState({isLoaded: true});
                        console.error(error);
                    });
          };
@@ -136,9 +134,6 @@ class LoginScreen extends React.Component {
                 <View  >
                     <Text style={styles.error}>{this.state.messageErreur}</Text>
                 </View>
-                <ActivityIndicator size="large" color="#0000ff"
-                     animating={true}
-                      style={{ opacity: this.state.isLoaded ? 0 : 1, position: 'absolute', top: 230 }} />
               </View>
 
             );
