@@ -1,40 +1,29 @@
 import React, { Component } from 'react';
-import { AsyncStorage, ActivityIndicator } from 'react-native'
-import { Router, Switch, Route } from './services/Routing'
+import { AsyncStorage } from 'react-native';
 
-import LoginScreen from './scenes/Main/scenes/Login';
-import ProfilScreen from './scenes/Main/scenes/Profile';
+import Loading from 'src/components/Loading';
+
+import Main from './scenes/Main';
 
 
 class App extends Component {
 
-    constructor() {
-        super();
-        this.state = { hasToken: false, isLoaded: true };
-    }
+  constructor() {
+    super();
+    this.state = { hasToken: false, isLoaded: false };
+  }
 
-    componentDidMount() {
-        AsyncStorage.multiGet(['login', 'password']).then((token) => {
-            this.setState({ hasToken: token[0][1] !== null, isLoaded: true });
-        });
-    }
+  componentDidMount() {
+    AsyncStorage.multiGet(['login', 'password']).then((token) => {
+      this.setState({ hasToken: token[0][1] !== null, isLoaded: true });
+    });
+  }
 
-    render() {
-      if (!this.state.isLoaded) {
-        return (
-            <ActivityIndicator />
-        )
-      } else {
-        return(
-            <Router>
-                <Switch>
-                    <Route exact path="/" component={LoginScreen} />
-                    <Route path="/profil" component={ProfilScreen} />
-                </Switch>
-            </Router>
-        )
-      }
-    }
+  render() {
+    return !this.state.isLoaded ?
+      ( <Loading /> ) :
+      ( <Main /> );
+  }
 }
 
 export default App;

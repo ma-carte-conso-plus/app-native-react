@@ -1,28 +1,21 @@
 import React from 'react';
-import {
-  AsyncStorage,
-  StyleSheet,
-  Text,
-  TextInput,
-  Button,
-  View,
-  Switch,
-  ActivityIndicator
-} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
+import Loading from 'src/components/Loading';
+import LoginForm from './components/LoginForm';
 
 class LoginScreen extends React.Component {
 
-  constructor(props) {
-        super(props);
-        this.state = {
-            login: '9900001',
-            password: '',
-            masque: true,
-            isLoaded: false,
-            messageErreur: ''
-        };
+  constructor ( props ) {
+    super ( props );
+    this.state = {
+      login:           '9900001',
+      password:        '',
+      passwordVisible: false,
+      isLoaded:        false,
+      errorMessage:   ''
     };
+  };
 
   handleClick = () => {
       this.setState({isLoaded: false});
@@ -37,13 +30,13 @@ class LoginScreen extends React.Component {
                    .then((response) => response.json())
                    .then((responseJson) => {
                       if (responseJson.status) {
-                         this.setState({ messageErreur: 'Vérifiez les informations de connexion'} );
+                         this.setState({ errorMessage: 'Vérifiez les informations de connexion'} );
                          this.setState({isLoaded: true});
                          console.log('wrong password!');
                       } else {
                          AsyncStorage.multiSet([['login', responseJson.noCompte], ['password', responseJson.password]])
                             .then(() => {
-                                  this.setState({ messageErreur: ''});
+                                  this.setState({ errorMessage: ''});
                                   this.setState({isLoaded: true});
 
                                   const location = {
@@ -54,13 +47,13 @@ class LoginScreen extends React.Component {
                                   this.props.history.push(location);
                             })
                             .catch((error) => {
-                               this.setState({ messageErreur: 'Erreur de connexion!'} );
+                               this.setState({ errorMessage: 'Erreur de connexion!'} );
                                this.setState({isLoaded: true});
                             });
                       }
                    })
                    .catch((error) => {
-                       this.setState({ messageErreur: 'Erreur de connexion!'} );
+                       this.setState({ errorMessage: 'Erreur de connexion!'} );
                        this.setState({isLoaded: true});
                        console.error(error);
                    });
@@ -99,76 +92,19 @@ class LoginScreen extends React.Component {
 
 
   render() {
-    if (!this.state.isLoaded) {
-           return (
-                <View style={[styles.container, styles.horizontal]}>
-                    <ActivityIndicator size="large" color="#0000ff"
-                           animating={true} />
-                </View>
-           )
-
-        } else {
-            return (
-              <View style={styles.container}>
-                <View style={styles.gauche}>
-                    <View style={styles.form}>
-                      <Text>Login: </Text>
-                      <TextInput style={{width: 150}}
-                            value={this.state.login}
-                            onChangeText={(text) => this.setState({login: text})} />
-                    </View>
-                    <View style={styles.form}>
-                      <Text>Password: </Text>
-                      <TextInput style={{width: 80}} secureTextEntry={this.state.masque}
-                            value={this.state.password}
-                            onChangeText={(text) => this.setState({password: text})} />
-                    </View>
-                    <View style={styles.form}>
-                        <Text>Afficher le password </Text>
-                        <Switch value={!this.state.masque}
-                            onValueChange={() => this.setState({masque: !this.state.masque})} />
-                    </View>
-                </View>
-
-                <Button title="Connexion" color="blue" onPress={ this.handleClick } style={styles.button}/>
-                <View  >
-                    <Text style={styles.error}>{this.state.messageErreur}</Text>
-                </View>
-              </View>
-
-            );
-         }
+    return !this.state.isLoaded ?
+      ( <Loading /> ) :
+      ( <LoginForm
+        login                      = { this.state.login }
+        password                   = { this.state.password }
+        passwordVisible            = { this.state.passwordVisible }
+        errorMessage               = { this.state.errorMessage }
+        onLoginChange              = { ( text )  => this.setState( { login: text } ) }
+        onPasswordChange           = { ( text )  => this.setState( { password: text } ) }
+        onPasswordVisibilityToggle = { ( value ) => this.setState( { passwordVisible: value } ) }
+        onLogin                    = { this.handleClick }
+      /> );
   }
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  form: {
-    flexDirection: 'row'
-  },
-  gauche: {
-    alignItems: 'flex-start'
-  },
-  top: {
-    justifyContent: 'flex-start'
-  },
-  button : {
-    alignSelf: 'center',
-  },
-
-  error: {
-    fontSize: 19,
-        fontWeight: 'bold',
-        color: 'red',
-        padding: 20
-  }
-});
-
 
 export default LoginScreen;
