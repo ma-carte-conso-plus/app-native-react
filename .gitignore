@@ -11,6 +11,10 @@
 
 # production
 /build
+/android/.gradle
+/android/build
+/android/app/build
+# ios build folders left
 
 # misc
 .env.local

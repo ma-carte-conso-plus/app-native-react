@@ -3,4 +3,4 @@ import App from './src/App';
 
 /* Entry point for react-native */
 
-AppRegistry.registerComponent( 'appnativereact', () => App );
+AppRegistry.registerComponent( 'CarteConsoPlus', () => App );

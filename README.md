@@ -6,14 +6,17 @@ Installation in development environment
 
 $ yarn
 
+Start with Metro & builded Mobile App
+$ yarn { start | android | ios }
+
 Start for Web in development environment
 $ yarn web:start
 
-Start for Native & Expo in development environment
-$ yarn native:start
+Start for CRNA & Expo in development environment
+$ yarn crna:start
 
 To use for Native & Virtual Device in development environment
-$ yarn { android | ios }
+$ yarn { crna:android | crna:ios }
 
 In case of Watchman errors
 

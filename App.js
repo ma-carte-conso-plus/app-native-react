@@ -1,9 +1,10 @@
 import React from 'react'
-import XPApp from './src/App'
+import App from './src/App'
 
-/* Entry point for Expo */
+/* Entry point for CRNA Expo */
+
 export default class NativeApp extends React.Component {
   render() {
-    return <XPApp />
+    return <App />
   }
 }
