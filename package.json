@@ -6,8 +6,9 @@
   "scripts": {
     "start": "react-native start",
     "android": "react-native run-android",
+    "android:release": "cd android && ./gradlew assembleRelease && cd ..",
     "ios": "react-native run-ios",
-    "test": "yarn run web:test && yarn run crna:test",
+    "test": "yarn web:test && yarn crna:test",
     "web:start": "react-scripts start",
     "web:build": "react-scripts build",
     "web:test": "react-scripts test --env=jsdom",

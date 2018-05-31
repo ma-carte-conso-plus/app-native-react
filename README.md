@@ -6,8 +6,17 @@ Installation in development environment
 
 $ yarn
 
-Start with Metro & builded Mobile App
+Start with Metro & builded debug version of Mobile App
 $ yarn { start | android | ios }
+
+Build release android apk
+( Make sure you have got ccp.keystore and correct passwords set in android/gradle.properties )
+$ yarn android:release
+
+-> Generated apk can be found in android/app/build/outputs/app-release.apk
+
+Test release apk
+$ yarn android --variant=release
 
 Start for Web in development environment
 $ yarn web:start

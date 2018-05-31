@@ -14,6 +14,7 @@
 /android/.gradle
 /android/build
 /android/app/build
+/android/app/ccp.keystore
 # ios build folders left
 
 # misc
