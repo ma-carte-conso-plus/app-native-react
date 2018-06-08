@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ma-carte-conso-plus/app-native-react.svg?branch=master)](https://travis-ci.org/ma-carte-conso-plus/app-native-react)
+
 # app-native-react
 
 Application Native React de la carte conso+ NC
