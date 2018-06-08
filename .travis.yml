@@ -1,3 +1,4 @@
 language: android
+android:
 script:
 - cd android && ./gradlew assembleDebug && cd ..
