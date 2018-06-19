@@ -4,32 +4,38 @@
 
 Application Native React de la carte conso+ NC
 
-Installation in development environment
-
+## Installation in development environment ( Mandatory )
+```
 $ yarn
-
-Start with Metro & builded debug version of Mobile App
+```
+## Start with Metro & builded debug Native version of Mobile App
+```
 $ yarn { start | android | ios }
-
-Build release android apk
+```
+## Build Native release android apk
 ( Make sure you have got ccp.keystore and correct passwords set in android/gradle.properties )
+```
 $ yarn android:release
-
+```
 -> Generated apk can be found in android/app/build/outputs/app-release.apk
-
-Test release apk
+## Test Native release apk
+```
 $ yarn android --variant=release
-
-Start for Web in development environment
+```
+## Start for Web in development environment
+```
 $ yarn web:start
-
-Start for CRNA & Expo in development environment
+```
+## Start Expo in development environment
+```
 $ yarn crna:start
-
-To use for Native & Virtual Device in development environment
+```
+## Start Expo & Virtual Device in development environment
+```
 $ yarn { crna:android | crna:ios }
-
-In case of Watchman errors
-
+```
+## In case of Watchman errors
+```
 $ watchman watch-del-all
 $ watchman shutdown-server
+```
