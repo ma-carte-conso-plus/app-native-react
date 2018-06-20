@@ -1,8 +1,26 @@
 [![Build Status](https://travis-ci.org/ma-carte-conso-plus/app-native-react.svg?branch=master)](https://travis-ci.org/ma-carte-conso-plus/app-native-react)
 
-# app-native-react
+# Carte Conso Plus
 
-Application Native React de la carte conso+ NC
+Application Native React and Native Web de la carte conso+ NC
+
+# Prerequisites
+
+## To Debug Test and Build for Android Without CRNA | Expo :
+  - Android SDK tools
+  - SDK build-tools 25
+
+## To Debug Test and Build for IOS Without CRNA | Expo :
+  - TODO
+
+## Set these sysctl variables to ( Mandatory ):
+```
+fs.inotify.max_user_instances = 4096
+fs.inotify.max_user_watches = 262144
+fs.inotify.max_queued_events = 524288
+```
+
+# Debug | Test | Build
 
 ## Installation in development environment ( Mandatory )
 ```
@@ -33,9 +51,4 @@ $ yarn crna:start
 ## Start Expo & Virtual Device in development environment
 ```
 $ yarn { crna:android | crna:ios }
-```
-## In case of Watchman errors
-```
-$ watchman watch-del-all
-$ watchman shutdown-server
 ```
